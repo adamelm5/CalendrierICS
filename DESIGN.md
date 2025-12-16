@@ -14,7 +14,8 @@ Flux de données typique :
 - outputs utilise ComponentList pour gérer les collections et formater la sortie finale
 - La sortie est générée dans le format spécifié (texte, HTML, ou ICS)
 
-<img width="1868" height="3529" alt="deepseek_mermaid_20251216_0bca97(1)" src="https://github.com/user-attachments/assets/ffeca39f-89ce-4f4c-943c-166a8bc1df12" />
+<img width="1868" height="3529" alt="image" src="https://github.com/user-attachments/assets/aad859c3-07f5-4d1a-bd9a-53f9d12669ef" />
+
 
 
 ## Utilisation du polymorphisme
