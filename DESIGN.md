@@ -14,6 +14,21 @@ Flux de données typique :
 - outputs utilise ComponentList pour gérer les collections et formater la sortie finale
 - La sortie est générée dans le format spécifié (texte, HTML, ou ICS)
 
+graph TD
+    A[Arguments CLI] --> B[CommandParser]
+    B --> C{Filtrage}
+    C -->|events| D[FilterIcsEvents]
+    C -->|todos| E[FilterIcsTodos]
+    D --> F[Liste blocs ICS]
+    E --> F
+    F --> G[outputs]
+    G --> H{Format de sortie}
+    H -->|text| I[Format texte]
+    H -->|html| J[Format HTML]
+    H -->|ics| K[Format ICS]
+    I --> L[Fichier de sortie]
+    J --> L
+    K --> L
 
 ## Utilisation du polymorphisme
 
