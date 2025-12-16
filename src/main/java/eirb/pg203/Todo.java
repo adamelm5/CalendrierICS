@@ -1,3 +1,5 @@
+package eirb.pg203;
+
 public class Todo extends CalendarComponent {
   // specific attributes for Todo
   private final String dueDate;

@@ -1,3 +1,5 @@
+package eirb.pg203;
+
 public class CalendarComponentTest {
   public static void main(String[] args) {
     System.out.println("=== Test de la classe abstraite CalendarComponent ===");

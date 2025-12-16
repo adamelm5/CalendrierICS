@@ -1,3 +1,5 @@
+package eirb.pg203;
+
 public abstract class CalendarComponent {
   // attributes
   protected final String uid;
