@@ -1,0 +1,57 @@
+mkdir -p bin
+javac -d bin src/main/java/eirb/pg203/*.java
+
+if [ $? -ne 0 ]; then
+    exit 1
+fi
+
+java -cp bin Main "$@"
+EXIT_CODE=$?
+
+OUTPUT_FILE=""
+FORMAT=""
+ARGS=("$@")
+
+for i in "${!ARGS[@]}"; do
+    ARG="${ARGS[i]}"
+    if [[ "$ARG" == "-html" ]]; then
+        FORMAT="html"
+    elif [[ "$ARG" == "-ics" ]]; then
+        FORMAT="ics"
+    fi
+    if [[ "$ARG" == "-o" ]] && [[ $((i+1)) -lt ${#ARGS[@]} ]]; then
+        OUTPUT_FILE="${ARGS[i+1]}"
+    fi
+done
+
+if [ -z "$OUTPUT_FILE" ] && [ -n "$FORMAT" ]; then
+    if [ -f "output.$FORMAT" ]; then
+        OUTPUT_FILE="output.$FORMAT"
+    elif [ -f "output" ]; then
+        OUTPUT_FILE="output"
+    else
+        FOUND_FILE=$(find . -maxdepth 1 -name "*.$FORMAT" -type f | head -1)
+        if [ -n "$FOUND_FILE" ]; then
+            OUTPUT_FILE="$FOUND_FILE"
+        fi
+    fi
+fi
+
+if [ -n "$OUTPUT_FILE" ] && [ -f "$OUTPUT_FILE" ]; then
+    if [[ "$FORMAT" == "html" ]] || [[ "$OUTPUT_FILE" == *.html ]]; then
+        if command -v firefox &> /dev/null; then
+            firefox "$OUTPUT_FILE" &
+        elif command -v xdg-open &> /dev/null; then
+            xdg-open "$OUTPUT_FILE" &
+        fi
+    elif [[ "$FORMAT" == "ics" ]] || [[ "$OUTPUT_FILE" == *.ics ]]; then
+        if command -v code &> /dev/null; then
+            code "$OUTPUT_FILE" &
+        elif command -v xdg-open &> /dev/null; then
+            xdg-open "$OUTPUT_FILE" &
+        fi
+    fi
+fi
+
+rm -rf bin
+exit $EXIT_CODE
