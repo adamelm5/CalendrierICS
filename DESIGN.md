@@ -4,59 +4,68 @@ L'application est un parser et visualiseur de fichiers ICS (iCalendar) qui perme
 
 ## Schéma général
 
-Décrivez ici le schéma général de votre programme. Quels sont les composants principaux et comment interagissent-ils?
+Flux de données typique :
+
+- L'utilisateur exécute la commande avec des arguments spécifiques
+- Main initialise le CommandParser pour interpréter ces arguments
+- Selon le type demandé (events/todos), le flux est dirigé vers FilterIcsEvents ou FilterIcsTodos
+- Ces classes filtrent le fichier ICS selon les critères (dates pour events, statuts pour todos)
+- Les résultats (blocs ICS en texte) sont passés à outputs pour conversion en objets sauf si l'option demandée par l'utilisateur est -ics (inutil de convertir les blocs ics en objets pour reconvertir en ics)
+- outputs utilise ComponentList pour gérer les collections et formater la sortie finale
+- La sortie est générée dans le format spécifié (texte, HTML, ou ICS)
+
 
 ## Utilisation du polymorphisme
 
-Le polymorphisme est utilisé à plusieurs niveaux dans l'application :
+Le **polymorphisme** est utilisé à plusieurs niveaux dans l'application :
 
-1. Polymorphisme par héritage
+**1. Polymorphisme par héritage**
 
-// CalendarComponent définit une interface commune
-public abstract class CalendarComponent {
-    public abstract String toString();
-}
-// Event et Todo implémentent différemment toString()
-public class Event extends CalendarComponent {
-    @Override
-    public String toString() {
-        return String.format(" Start: %s\n  End: %s\n  Summary: %s...", ...);
-    }
-}
-public class Todo extends CalendarComponent {
-    @Override 
-    public String toString() {
-        return String.format(" Start: %s\n  Due: %s\n  Summary: %s...", ...);
-    }
-}
-
-2. Polymorphisme dans ComponentList
-
-public class ComponentList<T extends CalendarComponent> {
-    // Peut traiter indifféremment Events et Todos
-    public String toStringByType(String type) {
-        for (T component : components) {
-            boolean isEvent = component instanceof Event;
-            boolean isTodo = component instanceof Todo;
-            // Traitement polymorphique selon le type réel
+        // CalendarComponent définit une interface commune
+        public abstract class CalendarComponent {
+            public abstract String toString();
         }
-    }
-}
+        // Event et Todo implémentent différemment toString()
+        public class Event extends CalendarComponent {
+            @Override
+            public String toString() {
+                return String.format(" Start: %s\n  End: %s\n  Summary: %s...", ...);
+            }
+        }
+        public class Todo extends CalendarComponent {
+            @Override 
+            public String toString() {
+                return String.format(" Start: %s\n  Due: %s\n  Summary: %s...", ...);
+            }
+        }
 
-3. Méthodes polymorphiques
+**2. Polymorphisme dans ComponentList**
 
-// getType() est redéfini dans les sous-classes
-public class CalendarComponent {
-    public String getType() { return "generic"; }
-}
-public class Event extends CalendarComponent {
-    @Override
-    public String getType() { return "events"; }
-}
-public class Todo extends CalendarComponent {
-    @Override
-    public String getType() { return "todos"; }
-}
+        public class ComponentList<T extends CalendarComponent> {
+            // Peut traiter indifféremment Events et Todos
+            public String toStringByType(String type) {
+                for (T component : components) {
+                    boolean isEvent = component instanceof Event;
+                    boolean isTodo = component instanceof Todo;
+                    // Traitement polymorphique selon le type réel
+                }
+            }
+        }
+
+**3. Méthodes polymorphiques**
+
+        // getType() est redéfini dans les sous-classes
+        public class CalendarComponent {
+            public String getType() { return "generic"; }
+        }
+        public class Event extends CalendarComponent {
+            @Override
+            public String getType() { return "events"; }
+        }
+        public class Todo extends CalendarComponent {
+            @Override
+            public String getType() { return "todos"; }
+        }
 
 ## Utilisation de la déléguation
 
@@ -78,7 +87,7 @@ De cette façon, les classes Event et Todo ont été factorisés, et n'importe q
 
 ## Utilisation de la généricité
 
-ComponentList générique est le meilleur exemple dans le projet :
+ComponentList est le meilleur exemple de **généricité** dans le projet :
 
 public class ComponentList<T extends CalendarComponent> implements Iterable<T> {
     private List<T> components;
@@ -90,8 +99,8 @@ public class ComponentList<T extends CalendarComponent> implements Iterable<T> {
     }
 }
 
-Utilisation dans la classe :
-
+**Utilisation dans la classe :
+**
 Cette classe est principalement utilisée dans la classe outputs qui est résponsable de la transformation de la chaine de la liste de la chaines de caractère de blocs EVENT et TODOS en une seule chaine de caractère qui sera retourné par le programm dans le format demandé. Cette conversion se fait en suivant ces étapes :
 1.   CalendarComponent icsToCalendarComponent(String icsString, String componentType); 
 se charge de la conversions d'un bloc "BEGIN:TODO|EVENT ..... END:TODO|EVENT" en objet correspondant
@@ -119,12 +128,12 @@ public class ComponentList<T extends CalendarComponent> {
 
 ## Utilisation des exceptions
 
-1. Validation des arguments avec IllegalArgumentException
-
-2. Validation des formats de date
-
-3. Gestion des erreurs de fichier
-
+**1. Validation des arguments avec IllegalArgumentException
+**
+**2. Validation des formats de date
+**
+**3. Gestion des erreurs de fichier
+**
 Dans les fichiers FilterIcs* responsables de la lecture du fichier et du filtrage des blocs "BEGIN: .... END: ....", la lecture de fichiers ics est exigée, une gestion des erreurs de lecture est donc indispensable. Exemple :
 
 public class FilterIcsEvents {
@@ -138,8 +147,8 @@ public class FilterIcsEvents {
     }
 }
 
-4. Validation des options invalides
-
+**4. Validation des options invalides
+**
 exemple:
 
 public class outputs {
@@ -158,8 +167,8 @@ public class outputs {
 
 Cette exemple montre l'aspect du programme ou les seuls arguments qui seront accéptés comme type de sortie sont OUTPUT_TEXT, OUTPUT_HTML et OUTPUT_HTML, n'importe quelle autre argument sera rejeté.
 
-5. Classes utilitaires non instanciables
-
+**5. Classes utilitaires non instanciables
+**
 exemple :
 
 public class DateUtils {
