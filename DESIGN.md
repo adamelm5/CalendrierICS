@@ -65,11 +65,11 @@ public class Todo extends CalendarComponent {
 ## Utilisation de l'héritage
 
 Hiérarchie d'héritage principale :
-'''
-            CalendarComponent (abstraite)
-            /                            \
-  (concrète) Event                   Todo (concrète)
-'''
+
+                CalendarComponent (abstraite)
+                /                            \
+      (concrète) Event                   Todo (concrète)
+
 CalendarComponent est une classe abstraite qui définit les attributs communs à tous les composants (UID, summary, location, etc.), elle fournit des implémentations par défaut pour les getters et déclare la méthode abstraite toString().
 
 Event et Todo héritent de CalendarComponent, elles ajoutent leurs attributs spécifiques et setters pour ceux modifiables, implémentent toString() pour les tâches à venir et redéfinissent getType()
