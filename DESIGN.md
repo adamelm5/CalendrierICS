@@ -14,21 +14,8 @@ Flux de données typique :
 - outputs utilise ComponentList pour gérer les collections et formater la sortie finale
 - La sortie est générée dans le format spécifié (texte, HTML, ou ICS)
 
-        graph TD
-            A[Arguments CLI] --> B[CommandParser]
-            B --> C{Filtrage}
-            C -->|events| D[FilterIcsEvents]
-            C -->|todos| E[FilterIcsTodos]
-            D --> F[Liste blocs ICS]
-            E --> F
-            F --> G[outputs]
-            G --> H{Format de sortie}
-            H -->|text| I[Format texte]
-            H -->|html| J[Format HTML]
-            H -->|ics| K[Format ICS]
-            I --> L[Fichier de sortie]
-            J --> L
-            K --> L
+<img width="1868" height="3529" alt="deepseek_mermaid_20251216_0bca97(1)" src="https://github.com/user-attachments/assets/ffeca39f-89ce-4f4c-943c-166a8bc1df12" />
+
 
 ## Utilisation du polymorphisme
 
