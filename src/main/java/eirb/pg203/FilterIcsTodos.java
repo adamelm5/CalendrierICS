@@ -88,22 +88,4 @@ public class FilterIcsTodos {
     }
     return Todos;
   }
-
-  public static void main(String[] args) {
-    String todoFile = "zfiles/todos.ics";
-
-    System.out.println("Test todos completed");
-    List<String> todosCompleted = FilterIcsTodos.extractTodosICS("completed", todoFile);
-    for (String todo : todosCompleted) {
-      System.out.println(todo);
-      System.out.println(" \n ");
-    }
-
-    System.out.println("Test todos incomplete");
-    List<String> todosIncomplete = FilterIcsTodos.extractTodosICS("incomplete", todoFile);
-    for (String todo : todosIncomplete) {
-      System.out.println(todo);
-      System.out.println(" \n ");
-    }
-  }
 }

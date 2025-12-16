@@ -87,22 +87,4 @@ public class DateUtils {
     }
     return String.format("%02d/%02d/%04d", day, month, year);
   }
-
-  public static void main(String[] args) {
-    // test de la fonction tomorrowDateParser
-    String date = "28/02/2020";
-    String nextDate = tomorrowDateParser(date);
-    System.out.println("Tomorrow of " + date + " is " + nextDate); // attendu 29/02/2020
-
-    date = "31/12/2021";
-    nextDate = tomorrowDateParser(date);
-    System.out.println("Tomorrow of " + date + " is " + nextDate); // attendu 01/01/2022
-
-    // test de la fonction dateParser
-    String icsDate = "20240315T103000Z";
-    String parsedDate = dateParser(icsDate);
-    System.out.println("Parsed date of " + icsDate + " is " + parsedDate); // attendu 15/03/2024
-    System.out.println("Parsed date-time of " + icsDate + " is "
-        + dateTimeParser(icsDate)); // attendu 15/03/2024 10:30:00
-  }
 }

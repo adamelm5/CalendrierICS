@@ -14,8 +14,7 @@ Flux de données typique :
 - outputs utilise ComponentList pour gérer les collections et formater la sortie finale
 - La sortie est générée dans le format spécifié (texte, HTML, ou ICS)
 
-<img width="1868" height="3529" alt="image" src="https://github.com/user-attachments/assets/aad859c3-07f5-4d1a-bd9a-53f9d12669ef" />
-
+![alt text](diag-1.png)
 
 
 ## Utilisation du polymorphisme
@@ -41,6 +40,8 @@ Le **polymorphisme** est utilisé à plusieurs niveaux dans l'application :
                 return String.format(" Start: %s\n  Due: %s\n  Summary: %s...", ...);
             }
         }
+        
+Les classes Event et Todo redéfinissent les méthodes abstraites ou virtuelles de CalendarComponent, permettant un comportement spécifique selon le type réel de l'objet.
 
 **2. Polymorphisme dans ComponentList**
 
@@ -54,25 +55,30 @@ Le **polymorphisme** est utilisé à plusieurs niveaux dans l'application :
                 }
             }
         }
+        
+ComponentList peut manipuler indifféremment des objets Event ou Todo grâce à leur type commun CalendarComponent.
 
-**3. Méthodes polymorphiques**
-
-        // getType() est redéfini dans les sous-classes
-        public class CalendarComponent {
-            public String getType() { return "generic"; }
-        }
-        public class Event extends CalendarComponent {
-            @Override
-            public String getType() { return "events"; }
-        }
-        public class Todo extends CalendarComponent {
-            @Override
-            public String getType() { return "todos"; }
-        }
 
 ## Utilisation de la déléguation
 
+La délégation est utilisée pour séparer clairement les responsabilités :
 
+Main ne traite aucune logique métier directement. Elle délègue :
+- le parsing des arguments à CommandParser,
+- le filtrage du fichier ICS à FilterIcsEvents ou FilterIcsTodos,
+- la génération de la sortie à outputs.
+
+Exemple conceptuel :
+
+        CommandParser parser = new CommandParser(args);
+        List<String> icsBlocks = FilterIcsEvents.extractEventsICS(...);
+        String result = outputs.generateOutput(icsBlocks, outputType);
+
+Cette délégation permet :
+
+- une meilleure lisibilité du code,
+- une testabilité accrue (chaque classe peut être testée indépendamment),
+- une maintenance facilitée.
 
 ## Utilisation de l'héritage
 
@@ -131,12 +137,14 @@ Cette façon de faire sera plus fléxible pour des changements à venir, elle pe
 ## Utilisation des exceptions
 
 **1. Validation des arguments avec IllegalArgumentException** 
+es arguments utilisateur invalides sont signalés par des IllegalArgumentException, par exemple en cas d'options incompatibles ou manquantes.
 
 **2. Validation des formats de date**
+Les dates sont validées lors du parsing. Une date mal formée déclenche une exception afin d'éviter des comportements incohérents.
 
 **3. Gestion des erreurs de fichier**
 
-Dans les fichiers FilterIcs responsables de la lecture du fichier et du filtrage des blocs "BEGIN: .... END: ....", la lecture de fichiers ics est exigée, une gestion des erreurs de lecture est donc indispensable. Exemple :
+La lecture des fichiers ICS est protégée par un bloc try-catch :
 
         public class FilterIcsEvents {
             public static List<String> extractTodayEventsICS(String date, String filePath) {
@@ -148,6 +156,8 @@ Dans les fichiers FilterIcs responsables de la lecture du fichier et du filtrage
                 }
             }
         }
+        
+Cela permet au programme de gérer proprement les erreurs d'entrée/sortie.
 
 **4. Validation des options invalides**
 
@@ -181,3 +191,7 @@ exemple :
         }
 
 Cette exception prévient le développeur d'avoir créé un objet dont son allouage ne rapporte rien; ce types de classes sont de type utilitaire seulement, elles comportent généralement des méthodes statiques pour un usage libre dans les autres classes
+
+## Conclusion
+
+Le design de l'application repose sur une séparation claire des responsabilités, l'utilisation raisonnée de l'héritage, du polymorphisme, de la généricité et de la délégation, une gestion explicite et robuste des erreurs.
